@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.13</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>cn.wolfcode</groupId>
+    <artifactId>springboot-docker-demo</artifactId>
+    <version>1.0.0</version>
+    <name>springboot-docker-demo</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <java.version>8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 应用监控 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.spotify</groupId>-->
+<!--                <artifactId>dockerfile-maven-plugin</artifactId>-->
+<!--                <version>1.4.13</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>default</id>-->
+<!--                        &lt;!&ndash; 自定义构建、推送命令 &ndash;&gt;-->
+<!--                        <goals>-->
+<!--                            <goal>build</goal>-->
+<!--                            <goal>push</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; 打包后的完整镜像名：仓库路径/组织/镜像名 &ndash;&gt;-->
+<!--                    <repository>192.168.113.121:5000/wolfcode/${project.artifactId}</repository>-->
+<!--                    &lt;!&ndash; 镜像版本号 &ndash;&gt;-->
+<!--                    <tag>${project.version}</tag>-->
+<!--                    &lt;!&ndash; 读取 settings.xml 文件中的认证信息 &ndash;&gt;-->
+<!--                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>-->
+<!--                    <buildArgs>-->
+<!--                        &lt;!&ndash; jar 所在目录 &ndash;&gt;-->
+<!--                        <JAR_FILE>target/${project.artifactId}-${project.version}.jar</JAR_FILE>-->
+<!--                    </buildArgs>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+        </plugins>
+    </build>
+
+</project>

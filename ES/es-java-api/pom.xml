@@ -1,0 +1,99 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.tanji</groupId>
+  <artifactId>es-java-api</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>es-java-api</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+<!--    <log4j.version>2.17.2</log4j.version>-->
+    <log4j.version>2.8.2</log4j.version>
+    <lombok.version>1.18.4</lombok.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>7.8.0</version>
+    </dependency>
+    <!-- elasticsearch的客户端 -->
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-high-level-client</artifactId>
+      <version>7.8.0</version>
+    </dependency>
+    <!-- elasticsearch依赖2.x的log4j -->
+    <!--
+        注意2.17.1以下的版本会有远程代码执行的安全漏洞，具体参考Apache官方文档（https://logging.apache.org/log4j/2.x/security.html），
+        参见：https://cloud.tencent.com/developer/article/2347147
+    -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <!--
+      https://blog.csdn.net/aselidy/article/details/84721601
+      commons-logging 和log4j2 配合使用，需要 log4j-jcl 做链接桥，否则 org.elasticsearch.client.RequestLogger.logResponse 日志打印不出来，
+      可跟踪 org.elasticsearch.client.RequestLogger.logResponse() 方法中 logger.isDebugEnabled()，
+      有了 log4j-jcl 才会桥接到新版（log4j2) org.apache.logging.log4j.core.Logger，否则使用的是旧版（log4j) org.apache.log4j.Logger
+
+      https://www.cnblogs.com/wt20/p/16610984.html
+      如果想要查看客户端发送给服务端的具体请求信息，需要打开以下日志，这个对于开发调试时很有帮助，生产模式务必关闭，因为不仅会打印请求参数日志，还会把服务端的响应信息也打印出来
+      具体可参见RestClient.convertResponse()、org.elasticsearch.client.RequestLogger.logResponse()两个方法
+      只打印请求行，开启日志org.elasticsearch.client.RestClient=debug
+      打印完整请求信息与响应信息，开启日志tracer=trace
+    -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jcl</artifactId>
+      <version>2.3</version>
+    </dependency>
+    <!-- log4j2和slf4j桥接依赖-->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <!--
+        slf4j-api 版本要用 1.7.x 或 更早，否则会报：
+          SLF4J(W): No SLF4J providers were found.
+          SLF4J(W): Class path contains SLF4J bindings targeting slf4j-api versions 1.7.x or earlier.
+    -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.36</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.9</version>
+    </dependency>
+    <!-- junit单元测试 -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+    </dependency>
+  </dependencies>
+</project>
