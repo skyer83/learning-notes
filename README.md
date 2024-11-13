@@ -5,6 +5,10 @@
 
 [Windows使用笔记](./Windows/docs/Windows.md)
 
+## Java
+
+[Java](./Java/docs/Java.md)
+
 ## MySQL
 
 [MySQL使用笔记](./MySQL/docs/MySQL.md)
