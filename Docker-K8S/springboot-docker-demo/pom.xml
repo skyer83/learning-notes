@@ -44,33 +44,34 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>com.spotify</groupId>-->
-<!--                <artifactId>dockerfile-maven-plugin</artifactId>-->
-<!--                <version>1.4.13</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>default</id>-->
-<!--                        &lt;!&ndash; 自定义构建、推送命令 &ndash;&gt;-->
-<!--                        <goals>-->
-<!--                            <goal>build</goal>-->
-<!--                            <goal>push</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--                <configuration>-->
-<!--                    &lt;!&ndash; 打包后的完整镜像名：仓库路径/组织/镜像名 &ndash;&gt;-->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <!-- 自定义构建、推送命令 -->
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 打包后的完整镜像名：仓库路径/组织/镜像名 -->
 <!--                    <repository>192.168.113.121:5000/wolfcode/${project.artifactId}</repository>-->
-<!--                    &lt;!&ndash; 镜像版本号 &ndash;&gt;-->
-<!--                    <tag>${project.version}</tag>-->
-<!--                    &lt;!&ndash; 读取 settings.xml 文件中的认证信息 &ndash;&gt;-->
-<!--                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>-->
-<!--                    <buildArgs>-->
-<!--                        &lt;!&ndash; jar 所在目录 &ndash;&gt;-->
-<!--                        <JAR_FILE>target/${project.artifactId}-${project.version}.jar</JAR_FILE>-->
-<!--                    </buildArgs>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+                    <repository>192.168.56.124:5000/wolfcode/${project.artifactId}</repository>
+                    <!-- 镜像版本号 -->
+                    <tag>${project.version}</tag>
+                    <!-- 读取 Maven 的 settings.xml 文件中的认证信息 -->
+                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                    <buildArgs>
+                        <!-- jar 所在目录，同时跟 Dckerfile 文件定义的 JAR_FILE 参数对应 -->
+                        <JAR_FILE>target/${project.artifactId}-${project.version}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
