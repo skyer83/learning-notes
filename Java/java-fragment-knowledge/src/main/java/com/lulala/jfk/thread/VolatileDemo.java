@@ -17,7 +17,7 @@ import java.util.concurrent.*;
  * @version 1.0
  * @since 2023-10-09 16:28
  */
-@SuppressWarnings("AlibabaRemoveCommentedCode")
+@SuppressWarnings("All")
 @Slf4j
 public class VolatileDemo {
 
@@ -60,6 +60,7 @@ class ThreadVisibility {
 @Slf4j
 class Task implements Runnable {
     // 演示线程可见（跳出死循环）
+    // volatile变量，保证新值能立即同步回主内存，以及每次使用前立即从主内存刷新，所以我们说volatile保证了多线程操作变量的可见性
     volatile boolean stop = false;
     // 演示线程不可见（死循环）
 //    boolean stop = false;
@@ -76,7 +77,7 @@ class Task implements Runnable {
 }
 
 /**
- * 不保证原子性
+ * volatile 无法保证原子性
  *
  * @author shenjh
  * @version 1.0
@@ -91,7 +92,9 @@ class NoAtomicity {
     public void doCheck() {
         // 模拟确保并发线程获取到的初始 checked 为 false
         VolatileDemo.doSleep(100);
+        // 并发走到这里，此时 check 都是 false
         if (!checked) {
+            // 并发进入，虽然同时设置为 true ，但 times 还是会加多次
             checked = true;
             synchronized (this) {
                 times++;
@@ -116,7 +119,8 @@ class NoAtomicity {
         while (true) {
             int maxConcurrency = 1000;
             ThreadFactory threadFactory = new ThreadFactoryBuilder().setNamePrefix("demo-pool-").build();
-            ExecutorService executorService = new ThreadPoolExecutor(maxConcurrency, 10000, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<>(Integer.MAX_VALUE), threadFactory, new ThreadPoolExecutor.AbortPolicy());
+            ExecutorService executorService = new ThreadPoolExecutor(maxConcurrency, 10000, 0L,
+                    TimeUnit.MILLISECONDS, new LinkedBlockingDeque<>(Integer.MAX_VALUE), threadFactory, new ThreadPoolExecutor.AbortPolicy());
             NoAtomicity volatileDemo01 = new NoAtomicity();
             for (int i = 0; i < maxConcurrency; i++) {
                 try {
