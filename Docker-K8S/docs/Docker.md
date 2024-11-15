@@ -258,7 +258,25 @@ docker images
 # 删除镜像：docker rmi mysql:5.7 或 docker rmi [IMAGE ID，如：5107333e08a8] 或 docker image rm mysql:5.7
 docker rmi mysql:5.7
 docker rmi 5107333e08a8
+
+# 慎用，删除没有使用的镜像（删除没有被任何容器使用的镜像）
+docker image prune -a
 ```
+
+![img-ekVm3UkF-1586674340517](./Docker.assets/ac253a22dfc2f7f21a6d059ec4b14663.png)
+
+### 删除悬虚镜像
+
+> 有时候在构建新镜像的时候，为这个镜像打了一个已经存在的tag，此时Docker 会移除旧镜像上的tag,将这个tag 用在新的镜像上，此时旧镜像就变成了悬虚镜像, 或者构建新镜像报错时，也会生成一个悬虚镜像。
+
+```sh
+# 删除悬虚镜像
+docker image prune
+
+# 执行后还无法删除的，看下是否有对应运行的容器，将容器停用，然后删除容器，最后再删除 悬虚镜像
+```
+
+![img-KIYPqDts-1586674340515](./Docker.assets/a59fe917a2aa88b58f1dc8a37392fe65.png)
 
 ## 容器
 
@@ -1282,7 +1300,26 @@ RUN ["executable", "param1", "param2"]
 第二种写法类似函数调用，第一个参数为可执行文件，后面的都是参数
 ```
 
+#### COPY
+
+```markdown
+复制指令，从上下文目录中复制文件或者目录到容器里指定路径。
+
+语法：
+COPY [--chown=<user>:<group>] <源路径1>...  <目标路径>
+COPY [--chown=<user>:<group>] ["<源路径1>",...  "<目标路径>"]
+```
+
+```markdown
+ADD 指令和 COPY 的使用格类似（同样需求下，官方推荐使用 COPY）。功能也类似，不同之处如下：
+
+ADD 的优点：在执行 <源文件> 为 tar 压缩文件的话，压缩格式为 gzip, bzip2 以及 xz 的情况下，会自动复制并解压到 <目标路径>。
+ADD 的缺点：在不解压的前提下，无法复制 tar 压缩文件。会令镜像构建缓存失效，从而可能会令镜像构建变得比较缓慢。具体是否使用，可以根据是否需要自动解压来决定。
+```
+
 #### ADD
+
+> 相对于 COPY，ADD 拷贝的文件如果是压缩包，则会复制并解压到 目标路径
 
 ```markdown
 复制命令，把 src 的文件复制到镜像的 dest 位置
@@ -1352,7 +1389,7 @@ CMD <command> <param1> <param2>
 相同点：
 在整个 Dockerfile 中只能设置一次，如果写了多次则只有最后一次生效
 不同点：
-ENTRYPOINT 不会被运行容器时指定的命令所覆盖，而 CMD 会被覆盖
+ENTRYPOINT 不会被运行容器时指定的命令所覆盖（不变，稳定性比较好），而 CMD 会被覆盖（会变，扩展性比较好）
 如果同时设置了这两个指令，且 CMD 仅仅是选项而不是参数，CMD 中的内容会作为 ENTRYPOINT 的参数（一般不这么做）
 如果两个都是完整命令，那么只会执行最后一条
 语法：
@@ -1859,14 +1896,13 @@ docker logs -f -n 50 nexus
 # 或：docker exec -it nexus cat /nexus-data/admin.password
 [root@localhost docker]# docker exec -it nexus cat /nexus-data/admin.password
 34daaa9f-4c4c-4c57-825a-29c214daeff2
-
 ```
 
 > 部署完成日志
 
 ![image-20241031143040837](Docker.assets/image-20241031143040837.png)
 
-> 浏览器访问情况
+> 浏览器访问情况：http://192.168.56.124:8868
 
 ![image-20241031143105112](Docker.assets/image-20241031143105112.png)
 
@@ -1963,7 +1999,7 @@ sudo systemctl restart docker
 ##### 推送镜像到私服
 
 ```shell
-# 登录私服
+# 登录私服，登录用户名、密码同 Nexus 配置的用户名、密码
 [root@localhost docker]# docker login -u admin 192.168.56.124:5000
 Password:
 WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
@@ -3453,17 +3489,17 @@ ID             NAME          MODE         REPLICAS   IMAGE          PORTS
 
 https://docs.docker.com/desktop/install/windows-install/
 
-## 开启虚拟化服务
+> 安装成功后，Windows 系统就可以在 dos 窗口像在 Linux 系统一样使用 Docker 命令了：
+
+![image-20241114185127915](./Docker.assets/image-20241114185127915.png)
+
+## 前置条件
+
+### 开启虚拟化服务
 
 进入`控制面板 > 程序 > 启用或关闭 Windows 功能`，开启右边三项
 
-![image-20241106162941405](Docker.assets/image-20241106162941405.png)
-
-![image-20241106163041018](Docker.assets/image-20241106163041018.png)
-
-
-
-### Hyper-V
+> Hyper-V
 
 如果服务中没有 Hyper-V，创建一个文本文件，保存下方内容
 
@@ -3478,3 +3514,822 @@ Dism /online /enable-feature /featurename:Microsoft-Hyper-V-All /LimitAccess /AL
 
 保存后，将文本文件后缀修改为 cmd，并且用管理员身份运行，运行完成后输入 y 重启电脑，之后再打开 Hyper-V 就可以运行了。
 
+![image-20241106162941405](Docker.assets/image-20241106162941405.png)
+
+> 适用于 Linux 的 Windows 子系统
+
+![image-20241106163041018](Docker.assets/image-20241106163041018.png)
+
+> Win10 - 虚拟机平台
+>
+> Win11 - Virtual Machine platform ，参见 [在开启windows功能里面没有虚拟机平台](https://answers.microsoft.com/zh-hans/windows/forum/all/%e5%9c%a8%e5%bc%80%e5%90%afwindows%e5%8a%9f/60cb926b-2802-4608-8fce-08104e57a2f9)
+
+![image-20241114125808167](./Docker.assets/image-20241114125808167.png)
+
+![image-20241114125740450](./Docker.assets/image-20241114125740450.png)
+
+### 安装 WSL2
+
+参见 [如何解决国内安装 wsl2 子系统，Ubuntu下载慢的问题](https://blog.csdn.net/qq401195092/article/details/133717025)
+
+[Ubuntu 24.04.1 LTS](https://apps.microsoft.com/detail/9nz3klhxdjp5?hl=zh-cn&gl=CN)
+
+[Ubuntu 22.04.5 LTS](https://apps.microsoft.com/detail/9pn20msr04dw?hl=zh-cn&gl=CN)
+
+
+
+### WSL 安装 Ubuntu
+
+#### 安装
+
+> 注意：一定要先设置 wsl 默认版本为 2 ，否则后面下载安装包时，安装包会很大
+
+```powershell
+# Win11 版本下的操作
+# 设置 wsl2 为默认版本，初次设置时，需要先更新适用于 Linux 的 Windows 子系统（需要梯子）
+PS C:\Users\Administrator> wsl --set-default-version 2
+适用于 Linux 的 Windows 子系统必须更新到最新版本才能继续。可通过运行 “wsl.exe --update” 进行更新。
+有关详细信息，请访问 https://aka.ms/wslinstall
+
+按任意键安装适用于 Linux 的 Windows 子系统。
+按 CTRL-C 或关闭此窗口以取消。
+此提示将在 60 秒后超时。
+
+# 按任意键后开始下载，或者退出后运行“wsl.exe --update”进行更新
+# 注意：需要梯子，否则下载慢的感人
+正在下载: 适用于 Linux 的 Windows 子系统 2.3.26
+正在安装: 适用于 Linux 的 Windows 子系统 2.3.26
+已安装 适用于 Linux 的 Windows 子系统 2.3.26。
+操作成功完成。
+有关与 WSL 2 关键区别的信息，请访问 https://aka.ms/wsl2
+
+操作成功完成。
+
+# 设置 wsl2 为默认版本
+PS C:\Users\Administrator> wsl --set-default-version 2
+有关与 WSL 2 关键区别的信息，请访问 https://aka.ms/wsl2
+
+操作成功完成。
+
+# 安装 Ubuntu ，需要梯子，否则安装报错：
+#   无法从“https://raw.githubusercontent.com/.../DistributionInfo.json”中提取列表分发。无法解析服务器的名称或地址
+#   错误代码: Wsl/InstallDistro/WININET_E_NAME_NOT_RESOLVED
+PS C:\Users\Administrator> wsl --install -d Ubuntu
+
+# 安装完成后，会要求输入新的 Linux 用户名与密码，root 用户默认存在，所以不能输入 root 用户
+# 设置用户名：root1234   密码：root1234
+
+# 用户名密码填完后，使用 PowerShell 查看当前版本，确认版本是否为 2，如果为 2 则不用升级
+# 如果版本为 1 ，则进行升级：wsl --set-version <第三步查到的名称> 2
+PS C:\Users\Administrator> wsl -l -v
+  NAME      STATE           VERSION
+* Ubuntu    Stopped         2
+```
+
+> 更新适用于 Linux 的 Windows 子系统：wsl.exe --update
+
+![image-20241114152730386](./Docker.assets/image-20241114152730386.png)
+
+> 安装 Ubuntu：wsl --install -d Ubuntu
+
+![image-20241114154407900](./Docker.assets/image-20241114154407900.png)
+
+#### 升级 wsl2
+
+> 未验证。本机是初次安装，直接设置了  wsl2 版本，未验证下文步骤是否可行
+
+```markdown
+如果以前已经装过其他 linux 子系统，且 wsl 版本为 1 的，按照以下步骤升级
+1、找到 软件 目录中的 wsl_update_x64.msi 执行并安装
+2、设置 wsl2 为默认版本 wsl --set-default-version 2
+3、查询需要升级的版本 wsl -l -v
+4、选择对应的版本升级 wsl --set-version <第三步查到的名称> 2
+5、输出转换完成后表示成功，通过 wsl -l -v 再次确认版本是否转换成功
+```
+
+## 安装 Docker Desktop
+
+下载地址：https://docs.docker.com/desktop/install/windows-install/
+
+直接默认安装，安装完成后初次打开的窗口选择 `Accept` 接受后 docker desktop 客户端便能打开了
+
+![image-20241114161915502](./Docker.assets/image-20241114161915502.png)
+
+### 问题说明
+
+#### 闪退问题
+
+检查确保 [开启虚拟化服务](#开启虚拟化服务) 开启勾选了对应的三个功能
+
+#### 卡在 Docker engine starting
+
+如果出现一直卡在 Engine starting，按住 shift 键在任意空白位置右键，打开 Power Shell，并执行如下两行命令
+
+```Powershell
+cd "C:\Program Files\Docker\Docker"
+
+./DockerCli.exe -SwitchDaemon
+```
+
+## 客户端设置
+
+### 启用 wsl 虚拟机子系统
+
+```markdown
+在 设置 界面中找到 Resources > WSL Integration 选项
+勾选 Enable integration with my default WSL distro
+
+且启用下方你所安装的 linux 子系统，如 Ubuntu
+
+修改完成后，点击右下方的 Apply & restart 按钮重启 Docker
+```
+
+![image-20241114163135563](./Docker.assets/image-20241114163135563.png)
+
+### 配置仓库与镜像
+
+> insecure-registries 值参见本文的 [配置信任地址](#配置信任地址) 说明
+>
+> registry-mirrors 值参见本文的 [国内其他镜像仓库配置](#国内其他镜像仓库配置) 说明
+
+```markdown
+找到设置页面中的 Docker Engine，进去以后修改原先的 json 文件，加入如下内容
+
+insecure-registries：信任的仓库列表，用于 pull/push 镜像
+registry-mirrors：镜像仓库列表，用于提升镜像下载速度
+
+  "insecure-registries": [
+    "192.168.56.124:5000",
+    "192.168.56.124:5001"
+  ],
+  "registry-mirrors": [
+    "https://docker.rainbond.cc",
+    "https://docker.udayun.com",
+    "https://docker.211678.top",
+    "https://hub.geekery.cn",
+    "https://ghcr.geekery.cn",
+    "https://gcr.geekery.cn",
+    "https://quay.geekery.cn",
+    "https://xdark.top",
+    "https://dockerproxy.cn"
+  ]
+
+修改完毕后点击右下方的 Apply & restart 按钮
+```
+
+![image-20241114163910525](./Docker.assets/image-20241114163910525.png)
+
+# IntelliJ IDEA 构建 Docker 镜像
+
+## maven 插件
+
+### 常见插件
+
+#### Spring Boot Maven 打包插件内置的 build-image
+
+缺点：封装高，灵活性低
+
+> <font color='red'>**前提是本地环境中安装了 Docker**</font>
+
+```text
+官方文档：https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#build-image
+
+Spring Boot 2.3 版本后默认集成了用于构建 Maven 镜像的插件，只要是 Spring Boot 项目，就可以直接使用，前提是本地环境中安装了 Docker。
+
+命令：
+mvn spring-boot:build-image
+
+拓展配置：
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        
+        <imageName>${groupId}/${project.artifactId}:${project.version}</imageName>
+        <docker>
+            
+            <publishRegistry>
+                <url>http://192.168.113.121:5000</url>
+                <username>admin</username>
+                <password>wolfcode</password>
+            </publishRegistry>
+        </docker>
+    </configuration>
+</plugin>
+```
+
+#### Google 的 jib-maven-plugin
+
+缺点：封装高，灵活性低
+
+> Jib 是一个 Maven 和 Gradle 插件，用来创建 Docker 镜像。它最大的特点是，你的本地可以没有 Docker 也可以进行构建，同样也不需要编写 Dockerfile 文件，不用改动代码，甚至不用修改 pom.xml 文件，运行如下命令即可：
+> mvn compile com.google.cloud.tools:jib-maven-plugin:2.3.0:dockerBuild
+
+#### Spotify 的 dockerfile-maven-plugin
+
+> 自定义编辑 Dockerfile 文件，灵活性高，参见 [Java Web 项目](#Java Web 项目) 和 [Spring Boot 项目](#Spring Boot 项目)
+
+```text
+专门基于 Dockerfile 构建镜像的插件，也是目前市面上用的比较多的镜像构建方式之一。
+<plugin>
+    <groupId>com.spotify</groupId>
+    <artifactId>dockerfile-maven-plugin</artifactId>
+    <version>1.4.13</version>
+    <executions>
+        <execution>
+            <id>default</id>
+            <goals>
+                <goal>build</goal>
+                <goal>push</goal>
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <repository>192.168.113.121:5000/wolfcode/${project.artifactId}</repository>
+        <tag>${project.version}</tag>
+        <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+        <buildArgs>
+            <JAR_FILE>target/${project.artifactId}-${project.version}.jar</JAR_FILE>
+        </buildArgs>
+    </configuration>
+</plugin>
+```
+
+### Dockerfile 配置
+
+```dockerfile
+## 基础镜像
+## AdoptOpenJDK 停止发布 OpenJDK 二进制，而 Eclipse Temurin 是它的延伸，提供更好的稳定性
+FROM eclipse-temurin:8-jre
+
+## 作者
+MAINTAINER xiaoliu <liugang@wolfcode.cn>
+
+## 定义参数
+ARG JAR_FILE
+
+## 创建并进入工作目录
+RUN mkdir -p /wolfcode
+WORKDIR /wolfcode
+
+## maven 插件构建时得到 buildArgs 种的值
+COPY ${JAR_FILE} app.jar
+
+## 设置 TZ 时区
+## 设置 JAVA_OPTS 环境变量，可通过 docker run -e "JAVA_OPTS=" 进行覆盖
+ENV TZ=Asia/Shanghai JAVA_OPTS="-Xms256m -Xmx256m"
+
+## 暴露端口
+EXPOSE 8080
+
+## 容器启动命令
+## CMD 第一个参数之后的命令可以在运行时被替换
+CMD java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar app.jar
+```
+
+### 构建镜像
+
+> mvn dockerfile:build
+
+### 推送镜像到仓库
+
+```text
+在 maven 的 settings.xml 文件的 servers 标签中，增加服务认证配置信息
+    <server>
+      <id>192.168.113.121:5000</id>
+      <username>admin</username>
+      <password>wolfcode</password>
+    </server>
+
+mvn dockerfile:push
+```
+
+## Alibaba Cloud Toolkit
+
+> Alibaba Cloud Toolkit（后文简称Cloud Toolkit）可以帮助开发者更高效地部署、测试、开发和诊断应用。Cloud Toolkit与主流IDE及阿里云其他产品无缝集成，帮助您大大简化应用部署到服务器，尤其是阿里云服务器中的操作。您还可以通过其内嵌的Arthas程序诊断、Terminal Shell终端和MySQL执行器等工具，简化应用开发、测试和诊断的过程。
+>
+> https://help.aliyun.com/document_detail/29968.html
+
+### 安装 Cloud Toolkit
+
+> 打开 idea 设置，进入 plugins 菜单，在插件市场中搜索 Alibaba Cloud Toolkit，找到后下载并重启 idea
+
+### 部署应用到镜像仓库
+
+```text
+在IntelliJ IDEA中打开您的工程。
+在IntelliJ IDEA顶部菜单栏中选择Tools > Alibaba Cloud > Deploy to Registry / Kubernetes > Deploy to Registry。
+在Deploy to Registry对话框设置部署参数。
+参数					|	描述
+		 			|	Context Directory：文件目录。
+Build Image			|	Dockerfile：Docker文件。
+					|	Version：镜像版本号。
+
+Image Repositories	|	Alibaba Cloud Container Registry：阿里云镜像仓库，详情请参见部署应用到ACR。
+					|	Custom Container Registry：自建镜像仓库，详情请参见部署应用到其它镜像仓库。
+```
+
+![image-20241115161239801](./Docker.assets/image-20241115161239801.png)
+
+#### 部署到 ACR
+
+> 在部署参数页面选择 Alibaba Cloud Container Registry。
+> 选择地域、命名空间和镜像仓库。
+> 在 Advanced下拉选项中选择网络类型。
+> Internet：公有网络。
+> VPC Network：VPC网络。
+> Classic Network：经典网络。
+> 先单击 Apply，然后单击 Run。
+
+![image-20241115161320400](./Docker.assets/image-20241115161320400.png)
+
+#### 部署到私服仓库
+
+> 在部署参数页面选择 Custom Container Registry。
+> 单击界面右侧的 Add，配置Registry信息。
+> 在 Registry 页面配置镜像仓库 Name、Address、Username 和 Password，单击 Apply，然后单击 OK。
+> 在 Repository 对话框填入您的镜像地址。
+> 先单击 Apply，然后单击 Run。
+
+![image-20241115161504351](./Docker.assets/image-20241115161504351.png)
+
+### 管理远程服务器
+
+#### 添加服务器
+
+```text
+已有支持 SSH 协议的远程服务器，可以直接添加；
+添加已有远程服务器
+在IntelliJ IDEA顶部菜单栏中选择Tools > Alibaba Cloud > Alibaba Cloud View > Host 。
+在Host页签中单击Add Host。
+在Add Host对话框填写Host相关信息，然后单击Test Connection来测试是否能成功连接服务器。若成功连接后单击Add。
+添加成功后，远程服务器将出现在Host页签中。
+```
+
+![image-20241115161616629](./Docker.assets/image-20241115161616629.png)
+
+![image-20241115161741642](./Docker.assets/image-20241115161741642.png)
+
+![image-20241115162037205](./Docker.assets/image-20241115162037205.png)
+
+#### 上传文件
+
+> 在Host或者Alibaba Cloud ECS页签中单击目标服务器Actions区域的Upload。
+> 在Upload对话框中选择需上传的文件或文件夹，并设置部署参数，然后单击Upload。
+>
+> 
+>
+> <font color='red'>**注意：如果远程服务器上已经存在该文件，则不会进行覆盖，可以理解为会上传失败**</font>
+>
+> 当前版本为：Alibaba Cloud Toolkit 2024.8.1-232-242
+
+![image-20241115162620508](./Docker.assets/image-20241115162620508.png)
+
+> 上传成功
+
+![image-20241115162802189](./Docker.assets/image-20241115162802189.png)
+
+![image-20241115162745666](./Docker.assets/image-20241115162745666.png)
+
+#### 下载文件
+
+```text
+在IntelliJ IDEA菜单栏选择Tools > Alibaba Cloud > Alibaba Cloud View > Host。
+在Host列表右侧Action选择Remote Files。
+您可根据需求选择刷新、上传和下载远程服务器上的文件。
+```
+
+![image-20241115162917160](./Docker.assets/image-20241115162917160.png)
+
+![image-20241115163134560](./Docker.assets/image-20241115163134560.png)
+
+# TODO 镜像构建项目实战
+
+## Java Web 项目
+
+> 参见 [javaweb-docker-demo](../javaweb-docker-demo)
+
+### Dockerfile
+
+```dockerfile
+# 基于 Tomcat9 作为基础镜像
+FROM tomcat:9.0
+
+# 作者
+MAINTAINER xiaoliu<liugang@wolfcode.cn>
+
+# 进入 Tomcat 部署目录
+WORKDIR /usr/local/tomcat/webapps
+
+# 定义参数
+ARG JAR_FILE
+
+# 将 war 包拷贝到 tomcat 中，并且改名为 ROOT
+COPY ${JAR_FILE} ROOT.war
+
+# 回到 Tomcat 根目录
+WORKDIR /usr/local/tomcat/
+
+# 启动时运行命令
+CMD bin/catalina.sh run
+```
+
+### pom.xml
+
+```xml
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <!-- 自定义构建、推送命令 -->
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 打包后的完整镜像名：仓库路径/组织/镜像名 -->
+<!--                    <repository>192.168.113.121:5000/wolfcode/${project.artifactId}</repository>-->
+                    <repository>192.168.56.124:5000/wolfcode/${project.artifactId}</repository>
+                    <!-- 镜像版本号 -->
+                    <tag>${project.version}</tag>
+                    <!-- 读取 settings.xml 文件中的认证信息 -->
+                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                    <buildArgs>
+                        <!-- jar 所在目录 -->
+                        <JAR_FILE>target/${project.artifactId}-${project.version}.war</JAR_FILE>
+                    </buildArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+```
+
+### 后续操作
+
+> 后续操作同下文的 [Spring Boot 项目](#Spring Boot 项目)
+
+> 本地 docker 镜像
+
+![image-20241115164137410](./Docker.assets/image-20241115164137410.png)
+
+> 私服仓库
+
+![image-20241115164434670](./Docker.assets/image-20241115164434670.png)
+
+> 从私服拉取镜像部署
+
+![image-20241115165400615](./Docker.assets/image-20241115165400615.png)
+
+> 验证成果：http://192.168.56.124:8808/
+
+![image-20241115165506897](./Docker.assets/image-20241115165506897.png)
+
+## Spring Boot 项目
+
+> 参见 [springboot-docker-demo](../springboot-docker-demo)
+
+### Dockerfile
+
+```dockerfile
+## 基础镜像
+## AdoptOpenJDK 停止发布 OpenJDK 二进制，而 Eclipse Temurin 是它的延伸，提供更好的稳定性
+FROM eclipse-temurin:8-jre
+
+## 作者
+MAINTAINER xiaoliu <liugang@wolfcode.cn>
+
+## 定义参数
+ARG JAR_FILE
+
+## 创建并进入工作目录
+RUN mkdir -p /wolfcode
+WORKDIR /wolfcode
+
+## maven 插件构建时得到 buildArgs 种的值
+COPY ${JAR_FILE} app.jar
+
+## 设置 TZ 时区
+## 设置 JAVA_OPTS 环境变量，可通过 docker run -e "JAVA_OPTS=" 进行覆盖
+ENV TZ=Asia/Shanghai JAVA_OPTS="-Xms256m -Xmx256m"
+
+## 暴露端口
+EXPOSE 8080
+
+## 容器启动命令
+## CMD 第一个参数之后的命令可以在运行时被替换
+CMD java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar app.jar
+```
+
+### pom.xml
+
+```xml
+   <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <!-- 自定义构建、推送命令 -->
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 打包后的完整镜像名：仓库路径/组织/镜像名 -->
+<!--                    <repository>192.168.113.121:5000/wolfcode/${project.artifactId}</repository>-->
+                    <repository>192.168.56.124:5000/wolfcode/${project.artifactId}</repository>
+                    <!-- 镜像版本号 -->
+                    <tag>${project.version}</tag>
+                    <!-- 读取 Maven 的 settings.xml 文件中的认证信息 -->
+                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                    <buildArgs>
+                        <!-- jar 所在目录，同时跟 Dckerfile 文件定义的 JAR_FILE 参数对应 -->
+                        <JAR_FILE>target/${project.artifactId}-${project.version}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+```
+
+### settings.xml
+
+> Maven 的 settings.xml
+>
+> 如果对应的仓库需要登录，则在 servers 下配置用户名、密码，通过 id 进行关联（有时直接是仓库路径的前缀），
+>
+> 如打包后的完整镜像名为（仓库路径/组织/镜像名）：192.168.56.124:5000/wolfcode/${project.artifactId} ，则 id 配置为：192.168.56.124:5000
+
+![image-20241114190019580](./Docker.assets/image-20241114190019580.png)
+
+### 构建本地 docker 镜像
+
+> 构建/打包成本地 docker 镜像
+
+![image-20241114190840945](./Docker.assets/image-20241114190840945.png)
+
+![image-20241114191128254](./Docker.assets/image-20241114191128254.png)
+
+> eclipse-temurin 为基础镜像
+
+![image-20241114191205354](./Docker.assets/image-20241114191205354.png)
+
+### 推送镜像到私服仓库
+
+> 构建后，如果在 Plugins 没看到 dockerfile 插件的话，点击下刷新
+
+![image-20241114191357421](./Docker.assets/image-20241114191357421.png)
+
+> 确保私服仓库正常运行，推送镜像到私服仓库：192.168.56.124:5000，组织：wolfcode
+
+![image-20241114193500569](./Docker.assets/image-20241114193500569.png)
+
+>  执行 dockerfile:push 推送成功
+
+![image-20241114193701116](./Docker.assets/image-20241114193701116.png) 
+
+![image-20241114193829649](./Docker.assets/image-20241114193829649.png)
+
+### 从私服拉取镜像部署
+
+要部署项目的服务器从 192.168.56.124 私服拉取 springboot-docker-demo 镜像并进行部署（运行容器）
+
+> docker-deploy.sh
+
+```sh
+#!/bin/bash
+
+## 第一个参数：up|start|stop|restart|rm
+COMMAND=$1
+## app 名称
+APP_NAME=$2
+
+## 如果没有给 app 名称，默认就叫 app
+if [ -z $APP_NAME ]; then
+  APP_NAME="springboot-docker-demo"
+fi
+
+## 暴露的端口
+EXPOSE_PORT=8888
+## 项目/组织
+NAMESPACE=wolfcode
+## 版本号
+TAG=1.0.0
+
+## 仓库地址
+REGISTRY_SERVER=192.168.56.124:5000
+
+## 用户名
+USERNAME=admin
+## 密码
+PASSWORD=admin
+
+## 镜像名称
+IMAGE_NAME="$REGISTRY_SERVER/$NAMESPACE/$APP_NAME:$TAG"
+
+## 使用说明，用来提示输入参数
+function usage() {
+	echo "Usage: sh docker-deploy.sh [up|start|stop|restart|rm]"
+	exit 1
+}
+
+## 登录仓库
+function login() {
+  echo "docker login -u $USERNAME --password-stdin $REGISTRY_SERVER"
+  echo "$PASSWORD" | docker login -u $USERNAME --password-stdin $REGISTRY_SERVER
+}
+
+## 启动容器
+function start() {
+  # 检查容器是否存在
+  CONTAINER_NAME=$(docker ps | grep "$APP_NAME" | awk '{print $NF}')
+  # 存在就不启动了
+  if [ -n "$CONTAINER_NAME" ]; then
+    echo "container $CONTAINER_NAME aready started..."
+    exit 1
+  fi
+  # 镜像如果不存在需要先登录
+  IMAGE=$(docker images | grep "$APP_NAME" | awk '{print $3}')
+  if [ -z "$IMAGE" ]; then
+    login
+  fi
+  # 容器不存在就启动
+  echo "starting container $APP_NAME..."
+  docker run -d --restart=always --name $APP_NAME -p $EXPOSE_PORT:8080 $IMAGE_NAME
+  echo "container $APP_NAME started..."
+}
+
+## 停止容器
+function stop() {
+  # 检查容器是否存在
+  CONTAINER_NAME=$(docker ps | grep "$APP_NAME" | awk '{print $NF}')
+
+  # 不存在就不需要停止
+  if [ -z "$CONTAINER_NAME" ]; then
+    echo "container $CONTAINER_NAME not running..."
+    exit 1
+  fi
+
+  # 存在就停止容器
+  echo "stoping container $APP_NAME..."
+  docker stop $CONTAINER_NAME
+  echo "container $APP_NAME stopted..."
+}
+
+## 重启容器
+function restart() {
+  # 先停止
+  stop
+  # 再启动
+  start
+}
+
+## 删除容器、镜像
+function rm() {
+  # 获取容器名称
+  CONTAINER_NAME=$(docker ps | grep "$APP_NAME" | awk '{print $NF}')
+  if [ -n "$CONTAINER_NAME" ]; then
+    # 停止容器
+    stop
+    # 删除容器
+    echo "removing container $APP_NAME..."
+    docker rm $CONTAINER_NAME
+    echo "container $APP_NAME removed..."
+  fi
+
+  # 获取镜像 id
+  IMAGE=$(docker images | grep "$APP_NAME" | awk '{print $3}')
+  if [ -n "$IMAGE" ]; then
+    # 删除镜像
+    echo "removing image $IMAGE..."
+    docker rmi $IMAGE
+    echo "image $IMAGE removed..."
+  fi
+}
+
+# 重新拉取镜像并启动容器
+function up() {
+  # 删除旧的镜像与容器
+  rm
+  # 拉取新的镜像并启动容器
+  start
+}
+
+# 根据输入参数，选择执行对应方法，不输入则执行使用说明
+case "$COMMAND" in
+"up")
+	up
+;;
+"start")
+	start
+;;
+"stop")
+	stop
+;;
+"restart")
+	restart
+;;
+"rm")
+	rm
+;;
+*)
+	usage
+;;
+esac
+```
+
+```sh
+# 创建目录
+mkdir -p /opt/docker/springboot-docker-demo
+
+# 创建 sh 部署脚本，将上文的内容拷贝进来
+cd /opt/docker/springboot-docker-demo
+vi docker-deploy.sh
+
+# 保存 docker-deploy.sh 文件后，设置可执行权限
+chmod +x docker-deploy.sh
+
+# 拉取、部署 springboot-docker-demo 镜像
+sh docker-deploy.sh up
+```
+
+```sh
+# 拉取、部署成功
+[root@node1 springboot-docker-demo]# sh docker-deploy.sh up
+docker login -u admin --password-stdin 192.168.56.124:5000
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+starting container springboot-docker-demo...
+Unable to find image '192.168.56.124:5000/wolfcode/springboot-docker-demo:1.0.0' locally
+1.0.0: Pulling from wolfcode/springboot-docker-demo
+802008e7f761: Pull complete
+...
+6b78a41944d8: Pull complete
+Digest: sha256:098d0053c03e5b9d6fe4cdb97ab269b333a1726b990ea474adfe23922e5b865f
+Status: Downloaded newer image for 192.168.56.124:5000/wolfcode/springboot-docker-demo:1.0.0
+dc7b5bd9e91e096a990252d6a208def356a3192bc770b38e35d17b8d8b22cad4
+container springboot-docker-demo started...
+```
+
+### 验证成果
+
+> http://192.168.56.124:8888/
+
+![image-20241115125705359](./Docker.assets/image-20241115125705359.png)
+
+![image-20241115125738056](./Docker.assets/image-20241115125738056.png)
+
+> http://192.168.56.124:8888/hello
+
+![image-20241115125805382](./Docker.assets/image-20241115125805382.png)
+
+![image-20241115125928139](./Docker.assets/image-20241115125928139.png)
+
+## TODO Spring Cloud 微服务项目
+
+### 部署流程
+
+#### 容器编排
+
+> docker-compose 
+
+#### Dockerfile 编写
+
+> 针对每一个服务都需要编写自定义的 Dockerfile，需要对所有服务的 Dockerfile 文件进行一个统一的管理。
+
+#### 网络问题
+
+> 自定义网络，或者利用 links 属性，将两个容器连接起来，以上两种方案都可以实现基于容器名称的访问
+
+#### 日志收集问题
+
+> ELK：利用 Lagstash 或 FileBeat 进行数据收集，将数据存入 ES，通过 Kibana 进行统一的数据可视化展示
+
+#### 监控问题
+
+> 应用/容器监控，健康状况、资源使用情况都需要进行监控，基于普罗米修斯实现各个类型的监控
+
+### Colud Toolkit 最佳实践
+
+#### 部署微服务多模块
+
+#### 查看远程日志
