@@ -4,7 +4,7 @@
 
 参见 [java中的static、final、static final各种用法](https://blog.csdn.net/qq_44543508/article/details/102691425)
 
-代码说明参见 [com.lulala.jfk.staticAndFinal](#com.lulala.jfk.staticAndFinal) 
+代码说明参见 [java-fragment-knowledgel](#java-fragment-knowledge) 的 com.lulala.jfk.staticAndFinal 包
 
 ### static
 
@@ -122,65 +122,28 @@ public class SayHelloTest {
 
 `匿名内部类的使用场景，通常来说，就是在一个内部类，只要创建一次，使用一次，以后就不再使用的情况下`，就可以。那么，此时，通常不会选择在外部创建一个类，而是选择直接创建一个实现了某个接口、或者继承了某个父类的内部类，而且通常是在方法内部，创建一个匿名内部类。
 
-# 项目说明
+## CountDownLatch与CyclicBarrier的区别
 
-## [java-fragment-knowledge](../java-fragment-knowledge)
+代码说明参见 [java-fragment-knowledgel](#java-fragment-knowledge) 的 ThreadConcurrentExecute 类
+
+在并发编程中，**CountDownLatch** 和 **CyclicBarrier** 是两个用于控制多线程协作的同步辅助类，它们虽然在功能上有相似之处，但也存在明显的区别。
+
+**CountDownLatch** 是一种同步机制，它允许一个或多个线程等待其他线程完成一系列操作后再继续执行。它内部维护了一个计数器，初始值为指定的数量。当一个线程完成了自己的任务后，可以调用*countDown()*方法将计数器减1。当计数器的值变为0时，所有等待的线程将被唤醒，可以继续执行。<font color='red'>CountDownLatch的特点是一次性的，计数器减到0后就不能再使用了</font> [1](https://cloud.tencent.com/developer/article/1703081) [2](https://blog.csdn.net/liangyihuai/article/details/83106584)。
+
+**CyclicBarrier** 则是一种多线程同步机制，它允许一组线程相互等待，直到所有线程都到达某个公共屏障点后再继续执行。CyclicBarrier内部维护了一个计数器和一个屏障点。当一个线程到达屏障点时，会调用*await()*方法等待其他线程。当所有线程都到达屏障点时，所有等待的线程将被唤醒，可以继续执行。<font color='red'>CyclicBarrier的特点是可以循环使用，当计数器减到0时会被重置为初始值，因此它适用于多次的线程协作场景</font> [2](https://blog.csdn.net/liangyihuai/article/details/83106584) [3](https://blog.csdn.net/weixin_42373241/article/details/132849828)。
+
+总结来说，CountDownLatch 适用于一次性事件，如等待初始化操作完成后才开始执行任务；而CyclicBarrier适用于循环发生的事件，如多个线程分批处理一系列相同的操作。此外，<font color='red'>CountDownLatch的动作实施者是主线程，而CyclicBarrier的动作实施者是“其他线程”本身</font>，这也是它们的一个重要区别 [2](https://blog.csdn.net/liangyihuai/article/details/83106584)。
+
+# 项目目录
+
+## java-fragment-knowledge
+
+参见 [java-fragment-knowledge](../java-fragment-knowledge/README.md)
 
 Java 碎片知识，用于记录开发、学习过程中的一些小知识点
 
-### com.lulala.jfk.thread
-
-关于线程的知识点说明
-
-### com.lulala.jfk.staticAndFinal
-
-关于 static、final 关键字的用法说明
-
 ## websocket-demo
-
-### 项目说明
 
 参见 [websocket-demo](../websocket-demo/README.md)
 
-### getBasicRemote 和 getAsyncRemote 的区别
-
-在 WebSocket 编程中，getBasicRemote() 和 getAsyncRemote() 是用于发送消息的两种不同方法。它们的主要区别在于同步和异步的处理方式。
-
-#### getBasicRemote()
-
-getBasicRemote() 方法用于同步发送消息。这意味着当你调用这个方法时，程序会等待消息发送完成后再继续执行后续代码。这种方式适用于需要确保消息按顺序发送的场景。
-
-```java
-session.getBasicRemote().sendText("Hello");
-```
-
-
-在上述代码中，程序会等待消息 "Hello" 发送完成后再继续执行。
-
-#### getAsyncRemote()
-
-getAsyncRemote() 方法用于异步发送消息。这意味着当你调用这个方法时，程序不会等待消息发送完成，而是立即返回并继续执行后续代码。这种方式适用于不需要严格顺序发送消息的场景，可以提高程序的并发性能。
-
-```java
-session.getAsyncRemote().sendText("Hello");
-```
-
-
-在上述代码中，程序不会等待消息 "Hello" 发送完成，而是立即返回并继续执行。
-
-#### 使用建议
-
-大多数情况下，推荐使用 getAsyncRemote() 方法，因为它不会阻塞程序的执行，可以提高性能。然而，在需要确保消息按顺序发送的场景下，应该使用 getBasicRemote() 方法。
-
-需要注意的是，使用 getBasicRemote() 方法时，如果在发送部分消息后立即发送另一条消息，可能会抛出 IllegalStateException 异常。因此，建议尽量一次性发送完整的消息。
-
-```java
-session.getBasicRemote().sendText(message, false); 
-session.getBasicRemote().sendBinary(data);
-session.getBasicRemote().sendText(message, true); 
-```
-
-> 由于同步特性，第二行的消息必须等待第一行的发送完成才能进行，而第一行的剩余部分消息要等第二行发送完才能继续发送，所以在第二行会抛出IllegalStateException异常。如果要使用getBasicRemote()同步发送消息，则尽量一次性发送完整消息，避免使用部分消息来发送。
->
-
-> 当多个功能都用同步发送时，比如（心跳检测和聊天信息的发送），聊天信息的发送可能会因为心跳发送的延迟而导致消息发送不出去，而多个异步消息发送不会出现这个问题！
+WebSocket 学习笔记

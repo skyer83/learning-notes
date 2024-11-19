@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
+ * 验证 concurrencetHashMap 的线程安全
  * @author shenjh
  * @version 1.0
  * @since 2024-11-05 10:57

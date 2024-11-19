@@ -37,6 +37,48 @@ spring 验证地址：http://localhost:8080/spring-ws-client.html
 
 # 参考文章
 
+## getBasicRemote 和 getAsyncRemote 的区别
+
+在 WebSocket 编程中，getBasicRemote() 和 getAsyncRemote() 是用于发送消息的两种不同方法。它们的主要区别在于同步和异步的处理方式。
+
+#### getBasicRemote()
+
+getBasicRemote() 方法用于同步发送消息。这意味着当你调用这个方法时，程序会等待消息发送完成后再继续执行后续代码。这种方式适用于需要确保消息按顺序发送的场景。
+
+```java
+session.getBasicRemote().sendText("Hello");
+```
+
+
+在上述代码中，程序会等待消息 "Hello" 发送完成后再继续执行。
+
+#### getAsyncRemote()
+
+getAsyncRemote() 方法用于异步发送消息。这意味着当你调用这个方法时，程序不会等待消息发送完成，而是立即返回并继续执行后续代码。这种方式适用于不需要严格顺序发送消息的场景，可以提高程序的并发性能。
+
+```java
+session.getAsyncRemote().sendText("Hello");
+```
+
+
+在上述代码中，程序不会等待消息 "Hello" 发送完成，而是立即返回并继续执行。
+
+#### 使用建议
+
+大多数情况下，推荐使用 getAsyncRemote() 方法，因为它不会阻塞程序的执行，可以提高性能。然而，在需要确保消息按顺序发送的场景下，应该使用 getBasicRemote() 方法。
+
+需要注意的是，使用 getBasicRemote() 方法时，如果在发送部分消息后立即发送另一条消息，可能会抛出 IllegalStateException 异常。因此，建议尽量一次性发送完整的消息。
+
+```java
+session.getBasicRemote().sendText(message, false); 
+session.getBasicRemote().sendBinary(data);
+session.getBasicRemote().sendText(message, true); 
+```
+
+> 由于同步特性，第二行的消息必须等待第一行的发送完成才能进行，而第一行的剩余部分消息要等第二行发送完才能继续发送，所以在第二行会抛出IllegalStateException异常。如果要使用getBasicRemote()同步发送消息，则尽量一次性发送完整消息，避免使用部分消息来发送。
+
+> 当多个功能都用同步发送时，比如（心跳检测和聊天信息的发送），聊天信息的发送可能会因为心跳发送的延迟而导致消息发送不出去，而多个异步消息发送不会出现这个问题！
+
 ## [SpringBoot+WebSocket 消息推送 校验 心跳机制 PING-PONG 用户分组等](https://blog.csdn.net/TCLms/article/details/131321389)
 
 ```java
