@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket 客户端</title>
+</head>
+<body>
+    <p style="border:1px solid black;width: 600px;height: 500px" id="talkMsg"></p>
+    <input id="message" onkeydown="handleEnter(event)"/>
+    <button id="sendBtn" onclick="sendMsg()" style="padding-left: 10px;">发送</button>
+</body>
+<script>
+    let ws = new WebSocket("ws://localhost:8080/javaWs");
+    console.info("ws 信息");
+    console.info(ws);
+    // 建立链接后的回调
+    ws.onopen = function (event) {
+        console.info("ws.onopen 信息");
+        console.info(event);
+    }
+    // 接收消息后的回调
+    ws.onmessage = function (event) {
+        console.info("ws.onmessage 信息");
+        console.info(event);
+        document.getElementById("talkMsg").innerText += "\n" + event.data;
+    }
+    // 关闭链接后的回调
+    ws.onclose = function (event) {
+        console.info("ws.onclose 信息");
+        console.info(event);
+        // 延生：断线重连
+    }
+    // 异常兜底的回调
+    ws.onerror = function (event) {
+        console.info("ws.onerror 信息");
+        console.info(event);
+    }
+
+    /**
+     * 发送消息
+     */
+    function sendMsg() {
+        ws.send(document.getElementById("message").value);
+        document.getElementById("message").value = "";
+    }
+
+    function handleEnter(event) {
+        if (event.keyCode === 13) {
+            // 回车键被按下，执行操作
+            sendMsg()
+        }
+    }
+</script>
+</html>
