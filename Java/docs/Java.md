@@ -138,6 +138,10 @@ Java 碎片知识，用于记录开发、学习过程中的一些小知识点
 
 ## websocket-demo
 
+### 项目说明
+
+参见 [websocket-demo](../websocket-demo/README.md)
+
 ### getBasicRemote 和 getAsyncRemote 的区别
 
 在 WebSocket 编程中，getBasicRemote() 和 getAsyncRemote() 是用于发送消息的两种不同方法。它们的主要区别在于同步和异步的处理方式。
