@@ -2,7 +2,7 @@
 
 视频教程地址：[WebSocket入门与案例实战](https://www.bilibili.com/video/BV1hF411k7bj?spm_id_from=333.788.videopod.episodes&vd_source=f050b4d563f8e729f80ae8b3803dfe24)
 
-源码地址：https://gitee.com/duoli-java/websocket-demo
+视频源码地址：https://gitee.com/duoli-java/websocket-demo
 
 # websocket-demo
 
@@ -22,14 +22,14 @@ java 目录是基于java注解的实现
 
 ### spring 目录
 spring 目录是基于spring封装的实现
-> HttpSessionHandshakelnterceptor(抽象类):握手拦截器，在握手前后添加操作
+> HttpSessionHandshakelnterceptor(抽象类)：握手拦截器，在握手前后添加操作
 > 
-> AbstractWebSocketHandler(抽象类):WebSocket处理程序，监听连接前，连接中，连接后
+> AbstractWebSocketHandler(抽象类)：WebSocket处理程序，监听连接前，连接中，连接后
 > 
-> WebSocketConfigurer(接口):配置程序，比如配置监听哪个端口，上面的握手拦截器，处理程序的使用
+> WebSocketConfigurer(接口)：配置程序，比如配置监听哪个端口，上面的握手拦截器，处理程序的使用
 
 ## 验证说明
-请求地址：http://localhost:8080，默认访问的页面是 resources 下的 static/index.html
+请求地址：http://localhost:8080 ，默认访问的页面是 resources 下的 static/index.html
 
 java 验证地址：http://localhost:8080/java-ws-client.html
 
