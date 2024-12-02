@@ -241,7 +241,11 @@ RD /S /Q \\?\%1
 
 ![image-20241108173115658](./Windows.assets/image-20241108173115658.png)
 
+### 创建相对路径的快捷方式
 
+> explorer.exe 辅助信息\typora.md
+
+![image-20241123121334995](./Windows.assets/image-20241123121334995.png)
 
 # Win11
 
