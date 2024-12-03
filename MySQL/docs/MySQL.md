@@ -15,6 +15,8 @@
 ## Window 命令行
 
 ```bat
+:: Change to Unicode(UTF-8)
+chcp 65001
 :: 备份数据库到当前命令行所在目录
 :: 备份 dbDemo 数据库
 SET dbName=dbDemo
@@ -29,6 +31,11 @@ mysqldump -uroot -proot --databases %dbName% > %dbName%.sql
 mysqldump -u root -proot --all-databases > all.sql
 ```
 
+```bat
+:: 备份远程数据库
+mysqldump -h127.0.0.1 -P3306 -utest -p123456 student > I:\sql\2021-07-27_14-19-14\student.sql
+```
+
 
 
 # 还原数据库
@@ -36,6 +43,8 @@ mysqldump -u root -proot --all-databases > all.sql
 ## Window 命令行
 
 ```bat
+:: Change to Unicode(UTF-8)
+chcp 65001
 :: 在当前命令行所在目录存在 dbDemo.sql 文件
 
 :: 未创建对应数据库的情况下
