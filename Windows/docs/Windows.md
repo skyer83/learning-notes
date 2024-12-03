@@ -342,3 +342,9 @@ for /f %P in ('dir %windir%\WinSxS\hosts /b /s') do copy %P %windir%\System32\dr
 
 ![image-20241111224328937](./Windows.assets/image-20241111224328937.png)
 
+## 磁盘（盘符）出现黄色感叹号
+
+![image-20241203222406364](./Windows.assets/image-20241203222406364.png)
+
+> 系统重启，解决
+
