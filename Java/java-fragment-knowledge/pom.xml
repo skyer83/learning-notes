@@ -54,6 +54,14 @@
             <version>${hutool.version}</version>
         </dependency>
         <!-- hutool e -->
+        <!-- mail s -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>1.6.7</version>
+        </dependency>
+        <!-- mail s -->
+
     </dependencies>
 
 </project>

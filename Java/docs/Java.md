@@ -1,5 +1,54 @@
 # Java知识点
 
+## email
+
+参见 [JAVA利用MimeMessage实现发送带附件的邮件](https://blog.csdn.net/lovewebeye/article/details/107294042)
+
+代码说明参见 [java-fragment-knowledgel](#java-fragment-knowledge) 的 com.lulala.jfk.email 包
+
+> com.sun.mail » javax.mail  已经迁移到 com.sun.mail » jakarta.mail 
+>
+> 引入 com.sun.mail:javax.mail 无法正常使用 javax.mail.* 下的包信息，需要引入 com.sun.mail:jakarta.mail
+>
+> ![image-20241210154924895](./Java.assets/image-20241210154924895.png)
+
+```xml
+<dependency>
+    <groupId>com.sun.mail</groupId>
+    <artifactId>javax.mail</artifactId>
+    <version>1.6.2</version>
+</dependency>
+<!-- 需改为 -->
+<dependency>
+    <groupId>com.sun.mail</groupId>
+    <artifactId>jakarta.mail</artifactId>
+    <version>1.6.7</version>
+</dependency>
+```
+
+```xml
+<!-- 1 -->
+<dependency>
+    <groupId>javax.mail</groupId>
+   	<artifactId>mail</artifactId>
+    <version>1.4</version>
+</dependency>
+<!-- 2 -->
+<dependency>
+    <groupId>com.sun.mail</groupId>
+    <artifactId>javax.mail</artifactId>
+    <version>1.6.2</version>
+</dependency>
+<!-- 3 -->
+<dependency>
+    <groupId>com.sun.mail</groupId>
+    <artifactId>jakarta.mail</artifactId>
+    <version>1.6.7</version>
+</dependency>
+```
+
+
+
 ## static、final
 
 参见 [java中的static、final、static final各种用法](https://blog.csdn.net/qq_44543508/article/details/102691425)
@@ -147,3 +196,4 @@ Java 碎片知识，用于记录开发、学习过程中的一些小知识点
 参见 [websocket-demo](../websocket-demo/README.md)
 
 WebSocket 学习笔记
+
