@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * 将远程文件作为附件，发送邮件
- * 参考 https://blog.csdn.net/lovewebeye/article/details/107294042
+ * 将远程文件作为附件，发送邮件 <br/>
+ * 参考 https://blog.csdn.net/lovewebeye/article/details/107294042 <br/>
  * @author shenjh
  * @version 1.0
  * @since 2024/12/10 14:56
@@ -33,6 +33,7 @@ import java.util.Properties;
 @Slf4j
 public class RemoteAttachEmailDemo {
     public static void main(String[] args) {
+
         Thread thread = new Thread(() -> {
             try {
                 String username = "xxx@126.com";

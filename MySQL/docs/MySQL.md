@@ -56,3 +56,18 @@ mysql -uroot -proot < dbDemo.sql
 mysql -uroot -proot %dbName%  < dbDemo.sql
 ```
 
+# 问题/解决
+
+## MySQL排序分页查询数据顺序错乱
+
+参见 [MySQL排序分页查询数据顺序错乱的原因和解决办法](https://blog.csdn.net/weixin_44299027/article/details/121627609)
+
+### 问题说明
+
+当 order by field_xxx 的 field_xxx 字段不是索引，也不是主键，且值又一样，在进行分页查询时，可能会出现第一页查询到的数据又继续在第二页出现
+
+> mysql对无索引字段进行排序后limit ，当被排序字段有相同值时并且在limit范围内，取的值并不是正常排序后的值，有可能第一页查询的记录，重复出现在第二页的查询记录中，而且第二页的查询结果乱序，导致分页结果查询错乱问题。
+
+### 解决方案
+
+给 field_xxx 创建索引，或增加 索引列或主键列 排序
