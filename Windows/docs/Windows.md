@@ -342,9 +342,37 @@ for /f %P in ('dir %windir%\WinSxS\hosts /b /s') do copy %P %windir%\System32\dr
 
 ![image-20241111224328937](./Windows.assets/image-20241111224328937.png)
 
-## 磁盘（盘符）出现黄色感叹号
+## 问题
+
+### 磁盘（盘符）出现黄色感叹号
+
+#### 问题
 
 ![image-20241203222406364](./Windows.assets/image-20241203222406364.png)
 
+#### 解决
+
 > 系统重启，解决
 
+### 此模块被阻止加载到本地安全机构
+
+#### 问题
+
+```text
+程序兼客性助手
+此模块被阳止加载到本地安全机构。
+Device\HarddiskVolume6\Program Files\Bonjour\mdnsNSP.dl
+有关此模块被阻止的原因的详细信息，请单击”了解详细信息”。
+```
+
+
+
+![image-20241206205856170](./Windows.assets/image-20241206205856170.png)
+
+#### 解决
+
+关闭“本地安全机构保护”
+
+![image-20241206210341816](./Windows.assets/image-20241206210341816.png)
+
+![image-20241209201125862](./Windows.assets/image-20241209201125862.png)
