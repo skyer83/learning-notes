@@ -71,3 +71,35 @@ mysql -uroot -proot %dbName%  < dbDemo.sql
 ### 解决方案
 
 给 field_xxx 创建索引，或增加 索引列或主键列 排序
+
+## [MySQL5.7 实现类似 MySQL8.0 中 row_number() over(partition by ... order by ...) 函数的分组排序编号效果](https://blog.csdn.net/weixin_49523761/article/details/129214488)
+
+> 建议嵌套一层，排序效果才会达到预期
+
+### 未嵌套
+
+> 未嵌套，acct_no 关联其他标过滤 [ a.acct_no in (select b.acct_no from temp_acct_no b, crm_trade_account c where b.acct_no = c.acct_no and c.trade_group = '1') ]，查询出的结果没达到预期
+
+```SQL
+select a.parent_no, a.close_time, @num := if(@field_1 <=> a.parent_no, @num + 1, 1) row_no, @field_1 := a.parent_no field_1 from crm_trade_order a, (select @num := 0, @field_1 := null) bb where a.acct_no in (select b.acct_no from temp_acct_no b, crm_trade_account c where b.acct_no = c.acct_no and c.trade_group = '1') and a.order_status = '1' order by a.parent_no asc, a.close_time desc;
+```
+
+![image-20241220172026360](./MySQL.assets/image-20241220172026360.png)
+
+> 未嵌套，acct_no 直接过滤[ a.acct_no in ('142241205123','142241205124','142241205125') ]，查询出的结果达到预期
+
+```SQL
+select a.parent_no, a.close_time, @num := if(@field_1 <=> a.parent_no, @num + 1, 1) row_no, @field_1 := a.parent_no field_1 from crm_trade_order a, (select @num := 0, @field_1 := null) bb where a.acct_no in ('142241205123','142241205124','142241205125') and a.order_status = '1' order by a.parent_no asc, a.close_time desc;
+```
+
+![image-20241220172150529](./MySQL.assets/image-20241220172150529.png)
+
+### 有嵌套
+
+> 未嵌套，acct_no 关联其他标过滤 [ a.acct_no in (select b.acct_no from temp_acct_no b, crm_trade_account c where b.acct_no = c.acct_no and c.trade_group = '1') ]，查询出的结果达到预期
+
+```SQL
+select aa.parent_no, aa.close_time, @num := if(@field_1 <=> aa.parent_no, @num + 1, 1) row_no, @field_1 := aa.parent_no field_1 from (select a.parent_no, a.close_time from crm_trade_order a where a.acct_no in (select b.acct_no from temp_acct_no b, crm_trade_account c where b.acct_no = c.acct_no and c.trade_group = '1') and a.order_status = '1') aa, (select @num := 0, @field_1 := null) bb order by aa.parent_no asc, aa.close_time desc;
+```
+
+![image-20241220172403151](./MySQL.assets/image-20241220172403151.png)
