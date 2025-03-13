@@ -314,6 +314,20 @@ for /f %P in ('dir %windir%\WinSxS\hosts /b /s') do copy %P %windir%\System32\dr
 
 ![image-20241108181741916](./Windows.assets/image-20241108181741916.png)
 
+## 调大暂停周数
+
+打开注册表，进入：计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings
+
+> cmd -> regedit
+
+新建 -> DWORD(32位)值(D) - 名称：`FlightSettingsMaxPauseDays` -> 十进制 -> 10000(天)
+
+![image-20250313090810504](./Windows.assets/image-20250313090810504.png)
+
+![image-20250313091320025](./Windows.assets/image-20250313091320025.png)
+
+![image-20250313091409824](./Windows.assets/image-20250313091409824.png)
+
 ## 电源和电池
 
 > 1. **最佳能效**：功耗最低，适合电池电量有限的情况，延长电池续航时间。
