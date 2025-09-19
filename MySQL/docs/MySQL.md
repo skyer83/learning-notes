@@ -330,3 +330,148 @@ select aa.parent_no, aa.close_time, @num := if(@field_1 <=> aa.parent_no, @num +
 ```
 
 ![image-20241220172403151](./MySQL.assets/image-20241220172403151.png)
+
+## 死锁 - 1205 -Lock wait timeout exceeded, try restarting transaction
+
+当 MySQL 返回错误 `1205 - Lock wait timeout exceeded; try restarting transaction` 时，这意味着一个事务在等待锁时超时了。这通常是因为另一个事务持有锁的时间过长，导致当前事务无法继续执行。以下是一些解决这个问题的步骤和建议：
+
+### 1. 理解错误信息
+- **错误代码**：`1205`
+- **错误信息**：`Lock wait timeout exceeded; try restarting transaction`
+- **含义**：当前事务在等待锁时超过了 `innodb_lock_wait_timeout` 设置的时间限制。
+
+### 2. 查看当前锁等待情况
+你可以通过以下命令查看当前的锁等待情况：
+
+```sql
+SELECT * FROM information_schema.INNODB_LOCK_WAITS;
+```
+
+
+这个查询会返回当前所有锁等待的情况，包括等待的事务和持有锁的事务。
+
+### 3. 查看锁信息
+你可以通过以下命令查看当前的锁信息：
+
+```sql
+SELECT * FROM information_schema.INNODB_LOCKS;
+```
+
+
+这个查询会返回当前所有锁的详细信息，包括锁的类型、持有锁的事务等。
+
+### 4. 查看事务信息
+你可以通过以下命令查看当前的事务信息：
+
+```sql
+SELECT * FROM information_schema.INNODB_TRX;
+```
+
+
+这个查询会返回当前所有活动事务的详细信息，包括事务 ID、隔离级别、执行的 SQL 语句等。
+
+### 5. 分析死锁和锁等待
+结合上述查询结果，你可以分析死锁和锁等待的情况。例如，你可以找到哪个事务持有锁，哪个事务在等待锁，以及锁的类型和范围。
+
+### 6. 解决锁等待超时问题
+以下是一些解决锁等待超时问题的方法：
+
+- **优化事务逻辑**：
+  - **减少事务持有锁的时间**：尽量减少事务的执行时间，尽快释放锁。
+  - **确保事务以相同的顺序访问资源**：例如，所有事务都先更新 `table1`，再更新 `table2`。
+  - **避免长时间运行的事务**：长时间运行的事务更容易导致锁等待超时。
+
+- **调整锁等待超时时间**：
+  - 你可以通过修改 `innodb_lock_wait_timeout` 参数来调整锁等待超时时间。默认值通常是 50 秒。
+  - 例如，将锁等待超时时间设置为 120 秒：
+
+    ```sql
+    SET GLOBAL innodb_lock_wait_timeout = 120;
+    ```
+
+
+  - 或者在当前会话中设置：
+
+    ```sql
+    SET SESSION innodb_lock_wait_timeout = 120;
+    ```
+
+
+- **终止持有锁的事务**：
+  - 如果某个事务持有锁的时间过长，你可以手动终止该事务。
+  - 首先，找到持有锁的事务 ID：
+
+    ```sql
+    SELECT * FROM information_schema.INNODB_TRX;
+    ```
+
+
+  - 然后，使用 `KILL` 命令终止该事务：
+
+    ```sql
+    KILL <transaction_id(trx_mysql_thread_id )>;
+    ```
+
+
+### 7. 示例
+假设你通过 `information_schema.INNODB_TRX` 查询找到了一个长时间持有锁的事务：
+
+```sql
+SELECT * FROM information_schema.INNODB_TRX;
+```
+
+
+输出可能如下：
+
+```
+trx_id    trx_state    trx_started    trx_requested_lock_id    trx_wait_started    trx_weight    trx_mysql_thread_id    trx_query
+123456    RUNNING    2023-10-01 12:34:56    NULL    NULL    3    123    UPDATE table1 SET col1 = 'value1' WHERE id = 1
+```
+
+
+你可以通过以下命令终止该事务：
+
+```sql
+KILL 123;
+```
+
+
+### 8. 监控和日志
+为了更好地管理和预防锁等待超时问题，建议定期监控数据库的锁等待情况，并记录相关日志。你可以使用 MySQL 的监控工具和日志功能来实现这一点。
+
+### 总结
+- 使用 `information_schema.INNODB_LOCK_WAITS`、`information_schema.INNODB_LOCKS` 和 `information_schema.INNODB_TRX` 查询来查看锁等待和事务信息。
+- 优化事务逻辑，减少事务持有锁的时间，确保事务以相同的顺序访问资源。
+- 调整 `innodb_lock_wait_timeout` 参数来调整锁等待超时时间。
+- 手动终止长时间持有锁的事务。
+- 定期监控和记录锁等待情况，预防锁等待超时问题。
+
+## [SHOW ENGINE INNODB STATUS](https://www.yingnd.com/mysql/188181.html)
+
+在MySQL命令行工具中输入以下命令：
+
+```sql
+show engine innodb status;
+```
+
+执行后，系统将返回与InnoDB相关的各种信息，包括事务的状态、锁的情况和缓冲池的使用情况。
+
+### 命令输出解析
+
+命令输出通常分为几个部分，每一个部分都提供了不同类型的信息：
+
+#### 历史事务
+
+这一部分展示了最近的事务活动。你可以观察到事务的开始时间、当前状态以及是否在等待锁。通过这些信息，你可以识别潜在的性能瓶颈。
+
+#### 锁的情况
+
+此部分包括所有当前持有的锁和正在等待的锁。锁的竞争可能导致数据库性能下降，了解这个信息能够帮助你优化查询效率。
+
+#### 缓冲池使用情况
+
+缓冲池是InnoDB用来缓存数据和索引的重要内存区域。通过查看缓冲池的使用状况，你可以判断系统是否需要更大的内存来处理当前负载。
+
+#### 死锁信息
+
+如果发生死锁，输出中会显示相关事务的ID以及它们之间的竞争情况。通过这些信息，开发人员可以采取措施来避免未来的死锁问题。
