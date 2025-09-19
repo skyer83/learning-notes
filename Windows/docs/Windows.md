@@ -152,7 +152,7 @@ pause
 
 ## DOS命令
 
-### DEL
+### del
 
 参见 [cmd删除文件命令del/erase和删除目录命令rmdir/rd](https://www.cnblogs.com/macrored/p/11415741.html)
 
@@ -185,7 +185,7 @@ ERASE [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
 /S 开关的显示句法会颠倒，即只显示已经
 ```
 
-### RD/RMDIR
+### rd/rmdir
 
 > rmdir 和 rd 是 windows 下删除文件夹的命令，除了.（当前目录）和..（上一级目录）不能删除外，其他的文件夹在权限足够的情况下都可以删除，命令不区分大小写
 
@@ -200,6 +200,26 @@ RD [/S] [/Q] [drive:]path
 
     /Q      安静模式，带 /S 删除目录树时不要求确认
 ```
+
+### netstat
+
+> 查看端口占用情况
+
+```BAT
+:: 查看所有端口占用
+netstat -ano
+
+:: 查找特定端口（如 8080），记录下对应的 PID，后续用于定位进程
+netstat -ano | findstr ":8888"
+
+:: 通过 PID 查找进程名
+tasklist | findstr "PID"
+
+:: 强制终止进程
+taskkill /PID 1234 /F
+```
+
+
 
 ## 其他
 
