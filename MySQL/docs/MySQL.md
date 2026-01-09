@@ -283,6 +283,30 @@ mysql -h$db_host -P$db_port -S /tmp/mysql.sock -u$db_user -p$db_password $recove
 echo "恢复数据完成"
 ```
 
+# 通用业务处理脚本
+
+## 全局替换某个字符串
+
+全局替换某库的所有表下的某个字符串
+
+```SQL
+SELECT TABLE_NAME, COLUMN_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = '库名AAA'
+  AND DATA_TYPE IN ('char', 'varchar', 'text', 'mediumtext', 'longtext');
+	
+	SELECT 
+  CONCAT(
+    'UPDATE `', TABLE_NAME, '` SET `', COLUMN_NAME, '` = REPLACE(`', COLUMN_NAME, '`, ''https://yyy.com/'', ''https://xxx.com/'') ',
+    'WHERE `', COLUMN_NAME, '` LIKE ''%https://yyy.com/%'';'
+  ) AS sql_statement
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = '库名AAA'
+  AND DATA_TYPE IN ('char', 'varchar', 'text', 'mediumtext', 'longtext');
+```
+
+
+
 # 问题/解决
 
 ## MySQL排序分页查询数据顺序错乱
