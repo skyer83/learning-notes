@@ -305,6 +305,37 @@ WHERE TABLE_SCHEMA = '库名AAA'
   AND DATA_TYPE IN ('char', 'varchar', 'text', 'mediumtext', 'longtext');
 ```
 
+## 统一所有表的 collation
+
+```SQL
+-- 生成批量修改语句
+SELECT CONCAT('ALTER TABLE `', TABLE_NAME, '` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;') 
+FROM INFORMATION_SCHEMA.TABLES 
+WHERE TABLE_SCHEMA = 'your_database_name' 
+AND TABLE_TYPE = 'BASE TABLE';
+```
+
+## 数据库连接信息
+
+```SQL
+-- 查看当前所有连接数
+SHOW STATUS LIKE 'Threads_connected';
+-- 查看最大允许连接数
+SHOW VARIABLES LIKE 'max_connections';
+-- 查看所有活跃连接的详细信息
+SHOW FULL PROCESSLIST;
+
+-- 总连接数（累计）
+SHOW STATUS LIKE 'Connections';
+-- 历史最大连接数
+SHOW STATUS LIKE 'Max_used_connections';
+
+-- MySQL 8.0+ 一键持久化（不用改配置文件），会把 max_connections=500 写入数据目录下的 mysqld-auto.cnf
+SET PERSIST max_connections = 500;
+-- 查看数据目录
+SELECT @@datadir;
+```
+
 
 
 # 问题/解决
