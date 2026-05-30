@@ -148,6 +148,23 @@ pause
 
 ```
 
+## 小功能
+
+### 恢复快捷方式箭头
+
+参见 [Win11快捷方式箭头没了怎办_Win11恢复快捷方式箭头](https://www.xitong86.com/article/win11jc/3496.html)
+
+> 另存为 bat 文件，用管理员执行
+
+```bat
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Icons" /v 29 /f
+taskkill /f /im explorer.exe
+start explorer
+pause
+```
+
+![Win11,快捷方式箭头,快捷方式步骤](./Windows.assets/1-2210150R525Q5.jpg)
+
 # Windows
 
 ## DOS命令
@@ -383,6 +400,59 @@ for /f %P in ('dir %windir%\WinSxS\hosts /b /s') do copy %P %windir%\System32\dr
 ![image-20241111224328937](./Windows.assets/image-20241111224328937.png)
 
 ## 问题
+
+### “Intel(R) Wireless-AC 9462”一直启动失败
+
+#### 问题
+
+> “Intel(R) Wireless-AC 9462”一直启动失败，导致无线网卡使用不了
+
+![image-20260218181551913](./Windows.assets/image-20260218181551913.png)
+
+#### 日志
+
+> 微型端口 Intel(R) Wireless-AC 9462、{297bd32f-17a2-416d-a9fc-7e8d437f4a45} 包含事件 Fatal error: The miniport has detected an internal error
+> Intel(R) Wireless-AC 9462 : 系统确定网络适配器的运行方式不恰当。
+> Intel(R) Wireless-AC 9462 : 注册表中丢失某个需要的参数。
+> Intel(R) Wireless-AC 9462 : 系统确定网络适配器的运行方式不恰当。
+
+![image-20260218181930462](./Windows.assets/image-20260218181930462.png)
+
+![image-20260218181949545](./Windows.assets/image-20260218181949545.png)
+
+> 详细信息
+
+```XML
+- <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+- <System>
+  <Provider Name="Microsoft-Windows-NDIS" Guid="{cdead503-17f5-4a3e-b7ae-df8cc2902eb9}" /> 
+  <EventID>10317</EventID> 
+  <Version>0</Version> 
+  <Level>2</Level> 
+  <Task>2</Task> 
+  <Opcode>0</Opcode> 
+  <Keywords>0x2000000000004016</Keywords> 
+  <TimeCreated SystemTime="2026-02-18T09:30:33.0259190Z" /> 
+  <EventRecordID>72824</EventRecordID> 
+  <Correlation ActivityID="{297bd32f-17a2-416d-a9fc-7e8d437f4a45}" /> 
+  <Execution ProcessID="4" ThreadID="392" /> 
+  <Channel>System</Channel> 
+  <Computer>DESKTOP-DACD8LS</Computer> 
+  <Security UserID="S-1-5-18" /> 
+  </System>
+- <EventData>
+  <Data Name="IfGuid">{297bd32f-17a2-416d-a9fc-7e8d437f4a45}</Data> 
+  <Data Name="IfIndex">7</Data> 
+  <Data Name="IfLuid">19985273102270464</Data> 
+  <Data Name="AdapterName">Intel(R) Wireless-AC 9462</Data> 
+  <Data Name="MiniportEventEnum">71</Data> 
+  </EventData>
+  </Event>
+```
+
+#### 解决
+
+在设备管理器中右键网卡，选择“属性”->“驱动程序”->“回滚驱动程序”（如果有之前版本）。
 
 ### 磁盘（盘符）出现黄色感叹号
 

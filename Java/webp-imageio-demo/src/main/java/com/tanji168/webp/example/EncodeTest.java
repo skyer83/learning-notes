@@ -16,7 +16,7 @@ public class EncodeTest {
     }
 
     private static void encodeTest2() throws IOException {
-        String inputJpgPath = "test_pic/test.jpg";
+        String inputJpgPath = "test_pic/test_01.jpg";
         String outputWebpPath = "test_pic/test_01.webp";
 
         long st = System.currentTimeMillis();
@@ -32,7 +32,7 @@ public class EncodeTest {
 
             // Configure the output on the ImageWriter
             fileImageOutputStream = new FileImageOutputStream(new File(outputWebpPath));
-            writer.setOutput(new FileImageOutputStream(new File(outputWebpPath)));
+            writer.setOutput(fileImageOutputStream);
 
             // Obtain an image to encode from somewhere
             BufferedImage image = ImageIO.read(new File(inputJpgPath));
