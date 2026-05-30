@@ -337,30 +337,6 @@ SET PERSIST max_connections = 500;
 SELECT @@datadir;
 ```
 
-
-
-# 通用业务处理脚本
-
-## 全局替换某个字符串
-
-全局替换某库的所有表下的某个字符串
-
-```SQL
-SELECT TABLE_NAME, COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = '库名AAA'
-  AND DATA_TYPE IN ('char', 'varchar', 'text', 'mediumtext', 'longtext');
-	
-	SELECT 
-  CONCAT(
-    'UPDATE `', TABLE_NAME, '` SET `', COLUMN_NAME, '` = REPLACE(`', COLUMN_NAME, '`, ''https://yyy.com/'', ''https://xxx.com/'') ',
-    'WHERE `', COLUMN_NAME, '` LIKE ''%https://yyy.com/%'';'
-  ) AS sql_statement
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = '库名AAA'
-  AND DATA_TYPE IN ('char', 'varchar', 'text', 'mediumtext', 'longtext');
-```
-
 # 问题/解决
 
 ## MySQL排序分页查询数据顺序错乱
@@ -401,7 +377,7 @@ select a.parent_no, a.close_time, @num := if(@field_1 <=> a.parent_no, @num + 1,
 
 ### 有嵌套
 
-> 未嵌套，acct_no 关联其他标过滤 [ a.acct_no in (select b.acct_no from temp_acct_no b, crm_trade_account c where b.acct_no = c.acct_no and c.trade_group = '1') ]，查询出的结果达到预期
+> 有嵌套（select a.parent_no, a.close_time），acct_no 关联其他标过滤 [ a.acct_no in (select b.acct_no from temp_acct_no b, crm_trade_account c where b.acct_no = c.acct_no and c.trade_group = '1') ]，查询出的结果达到预期
 
 ```SQL
 select aa.parent_no, aa.close_time, @num := if(@field_1 <=> aa.parent_no, @num + 1, 1) row_no, @field_1 := aa.parent_no field_1 from (select a.parent_no, a.close_time from crm_trade_order a where a.acct_no in (select b.acct_no from temp_acct_no b, crm_trade_account c where b.acct_no = c.acct_no and c.trade_group = '1') and a.order_status = '1') aa, (select @num := 0, @field_1 := null) bb order by aa.parent_no asc, aa.close_time desc;
