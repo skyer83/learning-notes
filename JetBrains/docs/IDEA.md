@@ -6,5 +6,7 @@
 
 > 如果添加不成功，则尝试将 `HTTP Proxy` 设置为 `No proxy` 或 `Auto-detect proxy settings`
 >
+> > 一般要开启 `梯子`
+>
 > ![image-20260530133354948](./IDEA.assets/image-20260530133354948.png)
 
