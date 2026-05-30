@@ -1,3 +1,59 @@
+# SQL
+
+## 事务隔离级别
+
+### 查看当前会话隔离级别（最常用）
+
+```SQL
+-- MySQL 5.7.20+ / 8.0 推荐
+SELECT @@transaction_isolation;
+
+-- 兼容旧版（5.6 等）
+SELECT @@tx_isolation;
+
+-- 会话级
+SELECT @@session.transaction_isolation;
+
+-- 全局级
+SELECT @@global.transaction_isolation;
+```
+
+> 示例输出
+>
+> ```text
+> +-------------------------+
+> | @@transaction_isolation |
+> +-------------------------+
+> | REPEATABLE-READ         |
+> +-------------------------+
+> ```
+
+### 用 SHOW VARIABLES 查看
+
+```SQL
+-- 当前会话
+SHOW VARIABLES LIKE 'transaction_isolation';
+
+-- 全局默认
+SHOW GLOBAL VARIABLES LIKE 'transaction_isolation';
+```
+
+### 查看当前正在运行的事务（InnoDB）
+
+```SQL
+USE information_schema;
+SELECT * FROM innodb_trx;
+```
+
+### 查看存储引擎是否支持事务
+
+```SQL
+-- 看 Transactions 列，InnoDB 为 YES，MyISAM 为 NO
+SHOW ENGINES;
+```
+
+
+
 # 初始数据库
 
 安装 MySQL 8.0 并初始化数据库之后，默认会创建以下系统数据库：
