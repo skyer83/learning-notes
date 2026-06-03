@@ -170,6 +170,98 @@ innodb_page_size=16384
 >
 > **页越小 → B+ 树越高 → 查询越慢**
 
+## 查看死锁信息
+
+### 一、现场查【最近 1 次死锁】（最快，死锁刚出现立刻执行）
+
+```SQL
+SHOW ENGINE INNODB STATUS;
+```
+
+**关键查找：**
+
+搜索 `LATEST DETECTED DEADLOCK` 区块，包含：
+
+- 死锁发生时间
+- 两个冲突事务、执行 SQL
+- 各自持有锁、等待锁、被回滚的事务（victim）
+
+> **缺点：只保存最后 1 次死锁，新死锁会覆盖旧记录，无法查历史死锁**
+
+> 死锁日志样例
+>
+> ![image](./MySQL.assets/3cef65e5f8264ca4487b431b0ded1425tplv-a9rns2rl98-pc_smart_face_crop-v1512384.png)
+
+### 二、查历史所有死锁（推荐生产长期开启，保存全部死锁）
+
+#### 1、查看开关状态
+
+```SQL
+SHOW VARIABLES LIKE 'innodb_print_all_deadlocks';
+```
+
+- OFF = 默认（只存最后 1 条在 innodb status）
+- ON=**所有死锁完整写入 error 错误日志，永久留存不覆盖**
+
+#### 2、临时开启（立即生效，重启 MySQL 失效）
+
+```SQL
+SET GLOBAL innodb_print_all_deadlocks = ON;
+```
+
+#### 3、永久开启（my.cnf/my.ini，重启生效）
+
+```INI
+[mysqld]
+innodb_print_all_deadlocks=ON
+```
+
+#### 4、查找错误日志路径
+
+```SQL
+SHOW VARIABLES LIKE 'log_error';
+```
+
+Linux 检索死锁：
+
+```BASH
+# 匹配死锁前后日志，-A后、-B前
+grep -A20 -B5 "Deadlock found" /xxx/error.log
+# 实时监控新死锁
+tail -f /xxx/error.log | grep -i deadlock
+```
+
+### 三、查看当前正在锁等待（没死锁但互相阻塞）
+
+5.7/8.0 通用：
+
+```SQL
+-- 当前活跃事务
+SELECT * FROM INFORMATION_SCHEMA.INNODB_TRX;
+
+-- 当前锁、锁等待（5.7）
+SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCKS;
+SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCK_WAITS;
+
+-- 当前锁、锁等待（8.0）
+SELECT * FROM performance_schema.data_locks;
+SELECT * FROM performance_schema.data_lock_waits;
+```
+
+> MySQL8.0 废弃`INNODB_LOCKS/INNODB_LOCK_WAITS`，改用`performance_schema.data_locks/data_lock_waits`
+
+### 四、统计死锁总次数（看一共发生多少次死锁）
+
+```SQL
+SELECT count FROM INFORMATION_SCHEMA.INNODB_METRICS WHERE NAME='lock_deadlocks';
+```
+
+### 补充：死锁日志关键字段释义
+1. `TRANSACTION 数字`：事务ID
+2. `UPDATE/INSERT`：死锁触发SQL
+3. `RECORD LOCKS ... X waiting`：等待X排他锁
+4. `*** ROLLBACK`：被MySQL回滚的牺牲品事务
+
 # 初始数据库
 
 安装 MySQL 8.0 并初始化数据库之后，默认会创建以下系统数据库：
