@@ -197,3 +197,8 @@ Java 碎片知识，用于记录开发、学习过程中的一些小知识点
 
 WebSocket 学习笔记
 
+## webp-imageio-demo
+
+参见 [webp-imageio-demo](../webp-imageio-demo/docs/webp-imageio-demo.md)
+
+webp图片与其他格式互转
