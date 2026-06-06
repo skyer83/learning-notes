@@ -1,6 +1,6 @@
 # TODO K8S
 
-《[完整版Kubernetes（K8S）全套入门+微服务实战项目，带你一站式深入掌握K8S核心能力](https://www.bilibili.com/video/BV1MT411x7GH/?spm_id_from=333.999.0.0&vd_source=f050b4d563f8e729f80ae8b3803dfe24)》学习笔记
+《[完整版Kubernetes（K8S）全套入门+微服务实战项目，带你一站式深入掌握K8S核心能力](https://www.bilibili.com/video/BV1MT411x7GH/?vd_source=f050b4d563f8e729f80ae8b3803dfe24)》学习笔记
 
 ## 搭建K8S集群
 

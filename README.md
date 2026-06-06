@@ -5,11 +5,11 @@
 
 ### Docker
 
-[Docker](./Docker-K8S/docs/Docker.md)
+TODO [2023最新Docker实战+微服务打包Docker容器](./Docker-K8S/docs/Docker.md)
 
 ### K8S
 
-[K8S](./Docker-K8S/docs/K8S.md)
+TODO [完整版Kubernetes（K8S）全套入门+微服务实战项目，带你一站式深入掌握K8S核心能力](./Docker-K8S/docs/K8S.md)
 
 ## ES
 
@@ -29,7 +29,13 @@
 
 ## Java
 
-[Java](./Java/docs/Java.md)
+[Java的一些知识点](Java的一些知识点)
+
+TODO [LangChain4J入门到项目实战-黑马程序员](./Java/LangChain4J-demo-heima/LangChain4J-demo-heima/README.)
+
+## JetBrains
+
+[日常使用说明](./JetBrains/docs/IDEA.md)
 
 ## MySQL
 

@@ -1,6 +1,6 @@
 # 前置条件
 
-学习视频：[2023最新Docker实战+微服务打包Docker容器](https://www.bilibili.com/video/BV1PT411d7ci?spm_id_from=333.788.videopod.episodes&vd_source=f050b4d563f8e729f80ae8b3803dfe24)
+学习视频：[2023最新Docker实战+微服务打包Docker容器](https://www.bilibili.com/video/BV1PT411d7ci/?vd_source=f050b4d563f8e729f80ae8b3803dfe24)
 
 Docker 官网：https://hub.docker.com
 
