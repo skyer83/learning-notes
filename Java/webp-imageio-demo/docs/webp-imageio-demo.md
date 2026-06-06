@@ -4,9 +4,7 @@
 
 ## 源码及示例
 
-git 源码地址：https://github.com/nintha/webp-imageio-core
-
-本地源码参见 [webp-imageio-core-0.1.3.zip](./webp-imageio-core-0.1.3.zip)
+git 源码地址：https://github.com/nintha/webp-imageio-core/releases/tag/v0.1.3
 
 ## Win11 系统 jpg格式转webp格式报错及解决
 
