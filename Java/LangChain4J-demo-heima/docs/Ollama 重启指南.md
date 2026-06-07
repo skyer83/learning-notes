@@ -49,9 +49,10 @@ launchctl start homebrew.mxcl.ollama
 ```powershell
 # 强制结束进程
 taskkill /F /IM ollama.exe
-# 前台启动服务
+# 前台启动服务，终端关掉后，服务也停止了
 ollama serve
-# 或执行：ollama list 也会自动启动 ollama
+# 或执行：ollama list 也会自动启动 ollama，且是后端启动，关掉终端，服务仍在运行
+ollama list
 ```
 
 > 若手动注册成 Windows 服务：
