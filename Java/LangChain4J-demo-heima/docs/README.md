@@ -133,9 +133,38 @@ curl http://localhost:11434/api/chat -d '{
   "messages": [
     {
       "role": "user",
-      "content": "填空为什么是蓝色的?"
+      "content": "你是谁？"
     }
   ]
 }'
 ```
 
+![image-20260607130056504](./README.assets/image-20260607130056504.png)
+
+# 阿里云百炼
+
+## 官网信息
+
+> 官网：https://bailian.console.aliyun.com/cn-beijing#/home
+
+![image-20260607220610767](./README.assets/image-20260607220610767.png)
+
+![image-20260607220656148](./README.assets/image-20260607220656148.png)
+
+> 模型广场：https://bailian.console.aliyun.com/cn-beijing?tab=model#/model-market/all
+
+![image-20260607220519007](./README.assets/image-20260607220519007.png)
+
+> API Key
+
+![image-20260607220741710](./README.assets/image-20260607220741710.png)
+
+## 大模型调用
+
+### 常见参数
+
+![image-20260607222209532](./README.assets/image-20260607222209532.png)
+
+### 响应数据
+
+![image-20260607222823568](./README.assets/image-20260607222823568.png)
