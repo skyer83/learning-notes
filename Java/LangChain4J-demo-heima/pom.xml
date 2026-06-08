@@ -14,14 +14,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>3.5.14</spring-boot.version>
-        <dev.langchain4j.version>1.14.1</dev.langchain4j.version>
+<!--        <dev.langchain4j.version>1.14.1</dev.langchain4j.version>-->
         <logback.version>1.5.34</logback.version>
+        <dev.langchain4j.spring.version>1.14.1-beta24</dev.langchain4j.spring.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -29,10 +30,15 @@
             <scope>test</scope>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>dev.langchain4j</groupId>-->
+<!--            <artifactId>langchain4j-open-ai</artifactId>-->
+<!--            <version>${dev.langchain4j.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-open-ai</artifactId>
-            <version>${dev.langchain4j.version}</version>
+            <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
+            <version>${dev.langchain4j.spring.version}</version>
         </dependency>
 
         <dependency>
