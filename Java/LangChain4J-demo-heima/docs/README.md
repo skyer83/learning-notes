@@ -169,12 +169,14 @@ curl http://localhost:11434/api/chat -d '{
 
 ![image-20260607222823568](./README.assets/image-20260607222823568.png)
 
-# LangChain4j\_会话功能\_快速入门
+# LangChain4j
+
+## 会话功能\_快速入门
 
 > 依赖版本选 1.14.1：https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-open-ai/1.14.1
 
 ```XML
-<properties>
+	<properties>
         <dev.langchain4j.version>1.14.1</dev.langchain4j.version>
     </properties>
     <dependencies>
@@ -191,3 +193,42 @@ curl http://localhost:11434/api/chat -d '{
 > > 用户/系统变量配置完后，要完全重启 IDEA ，否则 IDEA 不会加载到新配置的用户/系统变量
 
 ![image-20260608205200891](./README.assets/image-20260608205200891.png)
+
+## 会话功能\_spring整合LangChain4j
+
+> 依赖版本选 1.14.1-beta24：https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-open-ai-spring-boot-starter/1.14.1-beta24
+
+```XML
+	<properties>
+        <dev.langchain4j.spring.version>1.14.1-beta24</dev.langchain4j.spring.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
+            <version>${dev.langchain4j.spring.version}</version>
+        </dependency>
+    </dependencies>
+```
+
+> 添加“**用户/系统变量**” `ALI_YUNBAILIAN_API_KEY`
+>
+> > 用户/系统变量配置完后，要完全重启 IDEA ，否则 IDEA 不会加载到新配置的用户/系统变量
+
+> application.yml 配置
+
+```yaml
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${ALI_YUNBAILIAN_API_KEY}
+      model-name: qwen3.7-plus
+      log-requests: true
+      log-responses: true
+
+logging:
+  level:
+    dev.langchain4j: debug
+```
+
