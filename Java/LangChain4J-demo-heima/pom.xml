@@ -11,7 +11,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring-boot.version>3.0.2</spring-boot.version>
+        <spring-boot.version>3.5.14</spring-boot.version>
     </properties>
     <dependencies>
         <dependency>
@@ -54,7 +54,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.lulala.langchain4jdemoheima.LangChain4JDemoHeimaApplication</mainClass>
+                    <mainClass>com.lulala.langchain4j.LangChain4JDemoApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
                 <executions>
