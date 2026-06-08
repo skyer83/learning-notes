@@ -168,3 +168,26 @@ curl http://localhost:11434/api/chat -d '{
 ### 响应数据
 
 ![image-20260607222823568](./README.assets/image-20260607222823568.png)
+
+# LangChain4j\_会话功能\_快速入门
+
+> 依赖版本选 1.14.1：https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-open-ai/1.14.1
+
+```XML
+<properties>
+        <dev.langchain4j.version>1.14.1</dev.langchain4j.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai</artifactId>
+            <version>${dev.langchain4j.version}</version>
+        </dependency>
+    </dependencies>
+```
+
+> 添加“**用户/系统变量**” `ALI_YUNBAILIAN_API_KEY`
+>
+> > 用户/系统变量配置完后，要完全重启 IDEA ，否则 IDEA 不会加载到新配置的用户/系统变量
+
+![image-20260608205200891](./README.assets/image-20260608205200891.png)
