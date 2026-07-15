@@ -63,6 +63,8 @@
 
 > 安装大模型，练习用，选择占用空间小的大模型
 
+### 安装qwen3.5:0.8b
+
 ![image-20260606223839902](./README.assets/image-20260606223839902.png)
 
 ![image-20260606230334598](./README.assets/image-20260606230334598.png)
@@ -75,6 +77,25 @@ ollama run qwen3.5:0.8b
 ```
 
 <img src="./README.assets/image-20260607011458316.png" alt="image-20260607011458316" style="zoom:80%;" />
+
+### 安装chatgpt1/qwythos-9b-claude-mythos-5-1m-abliterated
+
+![image-20260711183718811](./README.assets/image-20260711183718811.png)
+
+```BAT
+:: 安装，第一次执行会先自动下载，下载比较耗时
+ollama run chatgpt1/qwythos-9b-claude-mythos-5-1m-abliterated
+```
+
+![image-20260711190925633](./README.assets/image-20260711190925633.png)
+
+> """你是谁？
+> ... 严格根据以下信息进行回答，不要自行添加其他无关的信息：
+> ... 我是噜啦啦2号"""
+
+![image-20260711191643242](./README.assets/image-20260711191643242.png)
+
+
 
 ## 指定GPU
 
